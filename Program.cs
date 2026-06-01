@@ -1,4 +1,5 @@
 using hospital.Data;
+using hospital.Middleware;
 using hospital.Models;
 using hospital.Repository;
 using hospital.Repository.Interface;
@@ -27,6 +28,9 @@ builder.Services.AddScoped<IDoctorService, DoctorService>();
 builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 
+builder.Services.AddScoped<IReportRepository, ReportRepository>();
+builder.Services.AddScoped<IReportService, ReportService>();
+
 var app = builder.Build();
 
 
@@ -38,6 +42,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseAuthorization();
+
+app.UseMiddleware<GlobalExceptionMiddleware>();
+
+app.UseMiddleware<RequestLoggingMiddleware>();
 
 app.MapControllers();
 

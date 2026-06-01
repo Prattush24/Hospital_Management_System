@@ -55,46 +55,27 @@ namespace hospital.Controllers
         [HttpPost]
         public async Task<IActionResult> RegisterPatient([FromBody] CreatePatientDto patient)
         {
-            try
-            {
-                await _patientService.RegisterPatientAsync(patient);
+            await _patientService.RegisterPatientAsync(patient);
 
-                return Ok("Patient Registered Successfully");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            return Ok("Patient Registered Successfully");
+            
 
         }
 
         [HttpPut("{PatientId}")]
         public async Task<IActionResult> UpdatePatientDetails(int PatientId, UpdatePatientDto upatient)
         {
-            try
-            {
-                await _patientService.UpdatePatientAsync(PatientId, upatient);
-                return Ok("Update Successfull!");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            await _patientService.UpdatePatientAsync(PatientId, upatient);
+            return Ok("Update Successfull!");
+            
 
         }
 
         [HttpPatch("{PatientId}/deactivate")]
         public async Task<IActionResult> DeactivatePatient(int PatientId)
         {
-            try
-            {
-                await _patientService.DeactivatePatientAsync(PatientId);
-                return Ok("Patient Deactivated Successfull!");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            await _patientService.DeactivatePatientAsync(PatientId);
+            return Ok("Patient Deactivated Successfull!");
 
         }
 
