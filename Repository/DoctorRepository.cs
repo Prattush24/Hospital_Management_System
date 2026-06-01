@@ -34,6 +34,7 @@ namespace hospital.Repository
             return await command.ExecuteNonQueryAsync();
         }
 
+
         public async Task<List<GetDoctorDto>> GetDoctorsBySpecializationAsync(string specialization)
         {
             List<GetDoctorDto> doctors = new();
