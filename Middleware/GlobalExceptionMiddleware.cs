@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using Microsoft.Data.SqlClient;
+using System.Text.Json;
 
 namespace hospital.Middleware
 {
@@ -21,20 +22,32 @@ namespace hospital.Middleware
             {
                 await _next(context);
             }
+            catch (SqlException ex)
+            {
+                context.Response.StatusCode = StatusCodes.Status400BadRequest;
+
+                await context.Response.WriteAsJsonAsync(new
+                {
+                    Message = ex.Message
+                });
+            }
+            catch (ArgumentException ex)
+            {
+                context.Response.StatusCode = StatusCodes.Status400BadRequest;
+
+                await context.Response.WriteAsJsonAsync(new
+                {
+                    Message = ex.Message
+                });
+            }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.Message);
+                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
 
-                context.Response.StatusCode = 500;
-                context.Response.ContentType = "application/json";
-
-                var response = new
+                await context.Response.WriteAsJsonAsync(new
                 {
-                    Message = "An unexpected error occurred."
-                };
-
-                await context.Response.WriteAsync(
-                    JsonSerializer.Serialize(response));
+                    Message = ex.Message
+                });
             }
         }
     }
