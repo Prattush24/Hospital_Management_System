@@ -1,3 +1,30 @@
+--Creating Appointments Table
+CREATE TABLE Appointments
+(
+    AppointmentId INT PRIMARY KEY IDENTITY(1,1),
+
+    PatientId INT NOT NULL,
+    DoctorId INT NOT NULL,
+
+    AppointmentDate DATETIME NOT NULL,
+
+    Status VARCHAR(20) NOT NULL
+        DEFAULT 'Scheduled'
+        CHECK (Status IN ('Scheduled','Completed','Cancelled')),
+
+    CancelledAt DATETIME NULL,
+
+    CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
+
+    CONSTRAINT FK_Appointments_Patient
+        FOREIGN KEY (PatientId)
+        REFERENCES Patients(PatientId),
+
+    CONSTRAINT FK_Appointments_Doctor
+        FOREIGN KEY (DoctorId)
+        REFERENCES Doctors(DoctorId)
+);
+
 
 --Booking Appointments
 CREATE PROCEDURE sp_BookAppointment
@@ -35,6 +62,22 @@ BEGIN
         -- Appointment date validation
         IF @AppointmentDate <= GETDATE()
             THROW 50003, 'Appointment date must be in the future.', 1;
+
+        --if Appointment exceeds more than 10 per day
+
+            IF EXISTS
+            (
+                SELECT 1
+                FROM Appointments
+                WHERE DoctorId = @DoctorId
+                  AND CAST(AppointmentDate AS DATE) = CAST(@AppointmentDate AS DATE)
+                  AND Status <> 'Cancelled'
+                GROUP BY DoctorId, CAST(AppointmentDate AS DATE)
+                HAVING COUNT(*) >= 10
+            )
+
+                THROW 50001, 'Doctor already has 10 appointments for this day.', 1;
+
 
         BEGIN TRANSACTION;
 
