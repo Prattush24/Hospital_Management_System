@@ -6,6 +6,8 @@
 
         public string DoctorName { get; set; } = string.Empty;
 
-        public int TotalAppointments { get; set; }
+        public string? Specialization { get; set; }
+
+        public int NumberOfAppointments { get; set; }
     }
 }

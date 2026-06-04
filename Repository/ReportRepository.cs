@@ -77,8 +77,9 @@ namespace hospital.Repository
                 doctors.Add(new DoctorAppointmentCountDto
                 {
                     DoctorId = reader["DoctorId"].ToString()!,
-                    DoctorName = reader["FullName"].ToString()!,
-                    TotalAppointments = Convert.ToInt32(reader["TotalAppointments"])
+                    DoctorName = reader["DoctorName"].ToString()!,
+                    Specialization = reader["Specialization"].ToString()!,
+                    NumberOfAppointments = Convert.ToInt32(reader["NumberOfAppointments"])
                 });
             }
 

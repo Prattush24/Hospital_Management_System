@@ -196,6 +196,75 @@ HospitalManagementSystem
 
 ---
 
+## Steps to Run the Application
+
+### Prerequisites
+
+- .NET 8 SDK
+- SQL Server
+- SQL Server Management Studio (SSMS)
+- Visual Studio 2022 or VS Code
+
+### Setup
+
+1. Clone the repository.
+
+```bash
+git clone <repository-url>
+cd HospitalManagementSystem
+```
+
+2. Create the database in SQL Server.
+
+3. Execute all SQL scripts:
+   - Tables
+   - Stored Procedures
+   - Sample Data (optional)
+
+4. Update the connection string in `appsettings.json`.
+
+```json
+"ConnectionStrings": {
+  "DefaultConnection": "Server=YOUR_SERVER;Database=HospitalDB;Trusted_Connection=True;TrustServerCertificate=True"
+}
+```
+
+5. Restore NuGet packages.
+
+```bash
+dotnet restore
+```
+
+6. Build the project.
+
+```bash
+dotnet build
+```
+
+7. Run the application.
+
+```bash
+dotnet run
+```
+
+8. Open Swagger UI in your browser.
+
+```text
+https://localhost:{port}/swagger
+```
+
+9. Test the APIs using Swagger.
+
+### Execution Order
+
+1. Register Patient
+2. Add Doctor
+3. Book Appointment
+4. View/Cancel Appointment
+5. Generate Reports
+
+
+
 ## API Documentation
 
 Swagger UI is enabled for testing and exploring all endpoints.

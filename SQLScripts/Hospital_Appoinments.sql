@@ -63,21 +63,33 @@ BEGIN
         IF @AppointmentDate <= GETDATE()
             THROW 50003, 'Appointment date must be in the future.', 1;
 
-        --if Appointment exceeds more than 10 per day
+        -- Doctor can have maximum 10 appointments per day
+        IF EXISTS
+        (
+            SELECT 1
+            FROM Appointments
+            WHERE DoctorId = @DoctorId
+              AND CAST(AppointmentDate AS DATE) = CAST(@AppointmentDate AS DATE)
+              AND Status <> 'Cancelled'
+            GROUP BY DoctorId, CAST(AppointmentDate AS DATE)
+            HAVING COUNT(*) >= 10
+        )
+            THROW 50004, 'Doctor already has 10 appointments for this day.', 1;
 
-            IF EXISTS
-            (
-                SELECT 1
-                FROM Appointments
-                WHERE DoctorId = @DoctorId
-                  AND CAST(AppointmentDate AS DATE) = CAST(@AppointmentDate AS DATE)
-                  AND Status <> 'Cancelled'
-                GROUP BY DoctorId, CAST(AppointmentDate AS DATE)
-                HAVING COUNT(*) >= 10
-            )
-
-                THROW 50001, 'Doctor already has 10 appointments for this day.', 1;
-
+        -- No appointment within 30 minutes of another scheduled appointment
+        IF EXISTS
+        (
+            SELECT 1
+            FROM Appointments
+            WHERE DoctorId = @DoctorId
+              AND Status = 'Scheduled'
+              AND ABS(DATEDIFF(MINUTE,
+                               AppointmentDate,
+                               @AppointmentDate)) < 30
+        )
+            THROW 50005,
+            'Doctor already has an appointment within 30 minutes of this time slot.',
+            1;
 
         BEGIN TRANSACTION;
 
@@ -95,6 +107,8 @@ BEGIN
                 @AppointmentDate,
                 'Scheduled'
             );
+
+            SELECT CAST(SCOPE_IDENTITY() AS INT) AS AppointmentId;
 
         COMMIT TRANSACTION;
 

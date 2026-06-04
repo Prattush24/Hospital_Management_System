@@ -5,9 +5,11 @@ namespace hospital.Repository.Interface
 {
     public interface IAppointmentRepository
     {
-        Task BookAppointmentAsync(BookAppointmentDto dto);
+        Task<int> BookAppointmentAsync(BookAppointmentDto dto);
 
         Task CancelAppointmentAsync(int appointmentId);
+
+        Task MarkAppointmentAsCompletedAsync(int appointmentId);
 
         Task<List<Appointment>> GetUpcomingAppointmentsAsync();
 

@@ -7,6 +7,7 @@
         public int DoctorId { get; set; }
 
         public DateTime AppointmentDate { get; set; }
+
         public string? PatientName { get; internal set; }
     }
 }
